@@ -3,7 +3,6 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from .models import Lecture
-import whisper
 
 
 def home(request):
@@ -19,39 +18,25 @@ def upload_audio(request):
         fs = FileSystemStorage(location='uploads/')
         filename = fs.save(audio.name, audio)
 
-        filepath = fs.path(filename)
+        # TEST TRANSCRIPT
+        transcript = "Audio uploaded successfully. Whisper is temporarily disabled."
 
-        try:
-            # Load Whisper only when needed
-            model = whisper.load_model("tiny")
+        Lecture.objects.create(
+            filename=filename,
+            transcript=transcript
+        )
 
-            # Convert speech to text
-            result = model.transcribe(filepath)
-            transcript = result["text"]
-
-            # Save transcript to database
-            Lecture.objects.create(
-                filename=filename,
-                transcript=transcript
-            )
-
-            notes = f"""
-Title: Introduction to Artificial Intelligence and Machine Learning
+        notes = """
+Title: Test Notes
 
 Summary:
-This lecture explains the basic concepts of Artificial Intelligence (AI) and Machine Learning (ML). AI refers to computers performing tasks that normally require human intelligence, such as decision-making and problem-solving. Machine Learning is a subset of AI where computers learn patterns from examples instead of following explicitly programmed rules.
+This is a test deployment without Whisper.
 
 Key Points:
-• AI enables computers to perform intelligent tasks.
-• AI can be used for decision-making and problem-solving.
-• Machine Learning is a branch of AI.
-• ML learns from examples rather than predefined rules.
-• Data helps machine learning models identify patterns.
+• File uploaded successfully.
+• Database save successful.
+• PDF generation should work.
 """
-
-        except Exception as e:
-            transcript = f"ERROR: {e}"
-            notes = "Could not generate notes."
 
         return render(request, 'result.html', {
             'filename': filename,
@@ -127,9 +112,7 @@ def download_pdf(request, lecture_id):
 
         else:
             p.drawString(50, y, line)
-
             y -= 20
-
             line = word + " "
 
             if y < 50:
