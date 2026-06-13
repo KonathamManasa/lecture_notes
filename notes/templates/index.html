@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lecture Notes AI</title>
+</head>
+<body>
+
+<h1>Upload Lecture Audio</h1>
+
+<form method="POST" enctype="multipart/form-data" action="/upload/">
+
+    {% csrf_token %}
+
+    <input type="file" name="audio">
+
+    <button type="submit">Generate Notes</button>
+
+</form>
+
+</body>
+</html>
