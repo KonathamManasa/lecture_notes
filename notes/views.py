@@ -5,9 +5,6 @@ from reportlab.pdfgen import canvas
 from .models import Lecture
 import whisper
 
-# Load Whisper model once
-model = whisper.load_model("tiny")
-
 
 def home(request):
     return render(request, 'index.html')
@@ -15,7 +12,7 @@ def home(request):
 
 def upload_audio(request):
 
-    if request.method == 'POST' and request.FILES['audio']:
+    if request.method == 'POST' and request.FILES.get('audio'):
 
         audio = request.FILES['audio']
 
@@ -25,6 +22,9 @@ def upload_audio(request):
         filepath = fs.path(filename)
 
         try:
+            # Load Whisper only when needed
+            model = whisper.load_model("tiny")
+
             # Convert speech to text
             result = model.transcribe(filepath)
             transcript = result["text"]
@@ -35,7 +35,6 @@ def upload_audio(request):
                 transcript=transcript
             )
 
-            # Notes
             notes = f"""
 Title: Introduction to Artificial Intelligence and Machine Learning
 
@@ -87,6 +86,8 @@ def dashboard(request):
         'total_lectures': total_lectures,
         'total_words': total_words
     })
+
+
 def view_lecture(request, lecture_id):
 
     lecture = Lecture.objects.get(id=lecture_id)
