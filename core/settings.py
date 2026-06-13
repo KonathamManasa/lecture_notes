@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-g@0f@_(%k3_g(z*tr6e*zp1)_ztw%op^^gz5wwdti=igf#e-tl'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["lecture-notes-f1zs.onrender.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
